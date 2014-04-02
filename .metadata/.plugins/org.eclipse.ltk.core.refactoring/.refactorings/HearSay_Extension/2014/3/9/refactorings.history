@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;HearSay_Extension/xpi/default&apos; to &apos;defaults&apos;" description="Rename resource &apos;default&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="xpi/default" name="defaults" stamp="1393698096061" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;HearSay_Extension/xpi/content/hello.xul&apos; to &apos;about.xul&apos;" description="Rename resource &apos;hello.xul&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="xpi/content/hello.xul" name="about.xul" stamp="1393698393737" updateReferences="true"/>
+</session>
