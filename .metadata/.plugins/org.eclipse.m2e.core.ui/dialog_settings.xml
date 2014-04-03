@@ -36,6 +36,8 @@
 	</section>
 	<section name="MavenProjectWizardLocationPage">
 		<list key="location">
+			<item value="E:\Dropbox\Project_Hearsay_V3\Hearsay_base\pom.xml"/>
+			<item value="E:\Dropbox\Project_Hearsay_V3\Hearsay_base"/>
 			<item value="E:\Dropbox\Project_Hearsay_V3\Hearsay_base\Hearsay_Interfaces"/>
 		</list>
 		<list key="projectNameTemplate">
@@ -48,13 +50,22 @@
 	</section>
 	<section name="Maven2ProjectWizardArchifactPage">
 		<list key="groupId">
-			<item value="com.hearsay"/>
+			<item value="com.HearsayMain"/>
+			<item value="com.demo1"/>
 		</list>
 		<list key="package">
-			<item value="org.HearSay_Extension"/>
+			<item value="org.Hearsay_Extension"/>
+			<item value="org.Extension"/>
+			<item value="org.Hearsay_Server"/>
+			<item value="com.HearsayMain.Main"/>
+			<item value="foo"/>
 		</list>
 		<list key="artifactId">
-			<item value="HearSay_Extension"/>
+			<item value="Hearsay_Extension"/>
+			<item value="Extension"/>
+			<item value="Hearsay_Server"/>
+			<item value="Main"/>
+			<item value="demo11"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
@@ -75,9 +86,11 @@
 	</section>
 	<section name="MavenModuleWizardParentPage">
 		<list key="moduleName">
+			<item value="Hearsay_Extension"/>
+			<item value="Extension"/>
+			<item value="Hearsay_Server"/>
 			<item value="HearSay_Extension"/>
 			<item value="HearSay"/>
-			<item value="Hearsay_Server"/>
 			<item value="Hearsay_Interfaces"/>
 		</list>
 		<list key="projectNameTemplate">
@@ -103,15 +116,13 @@
 	</section>
 	<section name="MavenProjectWizardArtifactPage">
 		<list key="groupId">
-			<item value="com.hearsay"/>
+			<item value="com.HearsayMain"/>
 		</list>
 		<list key="name">
 		</list>
 		<list key="artifactId">
-			<item value="HearSay_Extension"/>
-			<item value="Hearsay_base"/>
-			<item value="HearSay"/>
-			<item value="Hearsay_Server"/>
+			<item value="Hearsay_Extension"/>
+			<item value="Main"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
