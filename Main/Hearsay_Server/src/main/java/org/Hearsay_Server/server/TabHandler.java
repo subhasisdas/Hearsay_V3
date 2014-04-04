@@ -3,6 +3,8 @@ package org.Hearsay_Server.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -12,7 +14,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.Hearsay_Server.interfaces.IDomIterator;
 import org.Hearsay_Server.interfaces.IMessageChannel;
 import org.Hearsay_Server.interfaces.ITabHandler;
@@ -35,6 +36,7 @@ public class TabHandler implements ITabHandler
 	private boolean pauseMode = false;
 	/*moved from Message Channel interface*/
 	private int newTextId = 1;
+	private ArrayList<Long> text_id_bucket = new ArrayList<Long>();
 
 	public TabHandler(long gId, long id, IMessageChannel ch)
 	{
@@ -73,8 +75,8 @@ public class TabHandler implements ITabHandler
 		}
 	}
 
-	
-	
+
+
 	@Override
 	public synchronized void onReceive(Message msg) throws Exception
 	{
@@ -203,8 +205,8 @@ public class TabHandler implements ITabHandler
 		newTextId++;
 		return nextTextId;
 	}
-	
-/**
+
+	/**
 	 * 	Speaks the input parameter.
 	 * 	@param String This attribute stores the text content of the node and its descendants
 	 *  @return void
@@ -217,13 +219,26 @@ public class TabHandler implements ITabHandler
 		System.out.println("[TabHandler Server] : Node value to be sent :"+ nodeValueToSend);
 		ArrayList<String> textIdParameter = new ArrayList<String>();
 		//System.out.println("Text Id :"+Long.toString(globalId));
-		textIdParameter.add(Long.toString(base+(2*(++offset))));
+		Long text_Id = base+(2*(++offset));
+		textIdParameter.add(Long.toString(text_Id));
 		ttsSpeakMessage.getArguments().put("text", textParameter);
 		ttsSpeakMessage.getArguments().put("text_id", textIdParameter);
+
+		//new code added to fix the iterator bug
+		//text_id_bucket.add(text_Id);
+
+		//if (text_id_bucket.size()!=0){
 		System.out.println("[TabHandler Server Speak] : text- "+ textParameter +"   :: text_id- "+ textIdParameter );
 		channel.send(ttsSpeakMessage);
+		//	}
+
+		// new code ends		
+
+		//original code - commented
+		//channel.send(ttsSpeakMessage);
+
 	}	
-	
+
 	private int setHighlight(int nodeIdToSend){
 		String ss = " ";
 		if((iterator.getPos() == null))
@@ -243,14 +258,14 @@ public class TabHandler implements ITabHandler
 		}
 		return nodeIdToSend;
 	}
-	
+
 	/**
 	 * 	highlight the input parameter.
 	 * 	@param String This attribute stores the text content of the node and its descendants
 	 *  @return void
 	 */
 	private void hightLight(int nodeId) throws Exception{
-		
+
 		Message highlightMessage = new Message(MessageType.SET_HIGHLIGHT, tabId);
 		ArrayList<String> nodeToHighlight = new ArrayList<String>();
 		int nodeIdToSend = 0;	
@@ -264,9 +279,12 @@ public class TabHandler implements ITabHandler
 		System.out.println("[TabHandler Server] : NodeID highlighted is "+ Integer.toString(nodeIdToSend));
 		nodeToHighlight.add(Integer.toString(nodeIdToSend));
 		highlightMessage.getArguments().put("node_id", nodeToHighlight);
+
+		/*while(text_id_bucket.size() ==1){*/
 		channel.send(highlightMessage);
+		//}
 	}
-	
+
 	private void processINIT_DOM(Node payload) throws Exception{
 		if(payload != null)
 		{
@@ -326,6 +344,8 @@ public class TabHandler implements ITabHandler
 
 	private void processKeyPress(Message msg) throws Exception{
 		System.out.println("Key Press");
+		String nodeValueToSend = "";
+		int node_Id =0;
 		if(active)
 		{
 			String keyPressed = msg.getArguments().get("press").get(0);
@@ -338,15 +358,15 @@ public class TabHandler implements ITabHandler
 					if(pauseMode)
 					{
 						pauseMode = false;
-						String nodeValueToSend = iterator.getPos().getTextContent();
-						if(nodeValueToSend != null)
+						nodeValueToSend = iterator.getPos().getTextContent();
+						/*	if(nodeValueToSend != null)
 						{
 							System.out.println("Speaking!");
 							speak(nodeValueToSend);
 							System.out.println("highlighting");
 							hightLight(0);
 							System.out.println("Highlight Message sent on KEY PAUSE"); 
-						}
+						}*/
 					}
 					else
 					{
@@ -354,17 +374,39 @@ public class TabHandler implements ITabHandler
 						System.out.println("PAUSE MODE ENABLED");
 					}
 				}
+
+				else if(keyPressed.equals("keyPressed Up"))
+				{
+					//System.out.println("Keypressed up");
+					iterator.prev();
+					
+				}
+				else if(keyPressed.equals("keyPressed Down"))
+				{
+					//System.out.println("Keypressed Down");
+					iterator.next();
+				
+				}
 				else
 				{
 					//System.out.println("Speaking in second flag");
 					speak(keyPressed);
 					//System.out.println("highlightng in second flag");
-					hightLight(0);
+					hightLight(node_Id);
+				}
+
+				if(nodeValueToSend != null)
+				{
+					System.out.println("Speaking!");
+					speak(nodeValueToSend);
+					System.out.println("highlighting");
+					hightLight(node_Id);
+					System.out.println("Highlight Message sent on KEY PAUSE"); 
 				}
 			}
 		}
 	}
-	
+
 	private void processMouseEvent(Message msg) throws Exception{
 		System.out.println("Inside mouse");
 		int nodeClickedId = Integer.parseInt(msg.getArguments().get("id").get(0));
@@ -388,7 +430,7 @@ public class TabHandler implements ITabHandler
 				}
 				if(nodeValueToSend == null){
 					System.out.println("NULL MOUSE CLICK");
-				 }
+				}
 				else
 				{
 					speak(nodeValueToSend);
@@ -399,13 +441,20 @@ public class TabHandler implements ITabHandler
 			}
 		}
 	}
-	
+
 	private void processTTSDone(Message msg) throws Exception{
-		int text_id = Integer.parseInt(msg.getArguments().get("text_id").get(0)); 
+		long text_id = Long.parseLong(msg.getArguments().get("text_id").get(0)); 
+
 		System.out.println("Received a TTS_DONE message with pauseMode : " + pauseMode);
 		System.out.println("Received a TTS Done message for text_id" + text_id );
 		if(active && !pauseMode)
 		{
+			/*System.out.println("in loop");
+			if(text_id_bucket.contains(text_id)){
+				System.out.println(text_id + "found.removing..");
+				text_id_bucket.remove(text_id);
+			}*/
+			System.out.println("beginning iterator");
 			if(iterator.next())
 			{
 				String ttsDoneNodeValueToSend = iterator.getPos().getTextContent();
@@ -416,7 +465,7 @@ public class TabHandler implements ITabHandler
 				{
 					speak(ttsDoneNodeValueToSend);
 					hightLight(0);
-					//System.out.println("Highlight Message sent on TTS_DONE"); 
+					System.out.println("Highlight Message sent on TTS_DONE"); 
 				}
 			}
 		}

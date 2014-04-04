@@ -31,6 +31,7 @@ function hsCreateTTS(listener)
 				speak(text,{ noWorker:true});
 				log('audio started by user' + text_id);
 				//TODO : Use onEndSpeak listener ?? 
+				//listener.onEndSpeak(tts_obj, current_text_id);
 			},
 			release: function()
 			{

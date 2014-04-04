@@ -8,10 +8,7 @@ import org.w3c.dom.NodeList;
 import org.Hearsay_Server.interfaces.IDomIterator;
 import org.Hearsay_Server.interfaces.ITabHandler;
 
-/**
- * @author Manoj
- *
- */
+
 public class DomIterator implements IDomIterator 
 {
 	final private ITabHandler tab;

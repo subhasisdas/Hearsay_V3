@@ -125,6 +125,7 @@ public class Dispatcher extends Loggable implements ICommunicatorListener, IChan
 			}
 			break;
 		case FOCUS:			// Parameters: "id" - new currently selected node by browser.
+			break;
 		case TTS_DONE:	// parameters: "text_id" - text with text_id has been spoken.
 			if(activeTab != null && activeTab.getGlobalId()==globalTabId)
 			{
