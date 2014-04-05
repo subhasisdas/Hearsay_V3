@@ -17,7 +17,7 @@ function hsCreateTTS(listener)
 					//put it in try catch block and ignore
 					var mediator = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
 					var docTab = mediator.getMostRecentWindow("navigator:browser").document;
-					AudioEndedDoc(docTab);
+					CleanTheAudio(docTab);
 					log('audio stopped by user');
 				}
 				catch(e){
@@ -150,7 +150,8 @@ function hsCreateTTS(listener)
 	 * AudioEndedDoc is called when the speak function is completed.
 	 * It removes audio tag to the Mozilla Add-On bar Interface.
 	 */
-	function AudioEndedDoc(docTab) {
+	function CleanTheAudio(docTab)
+	{
 		var ele = docTab.getElementById("player");
 		if(ele==null)
 			return;
@@ -158,8 +159,14 @@ function hsCreateTTS(listener)
 		var elem = docTab.getElementById('audio');
 		while (elem.firstChild)
 			elem.removeChild(elem.firstChild);
+	}
+	
+	function AudioEndedDoc(docTab) 
+	{
+		CleanTheAudio(docTab);
 		log("speaking completed");
 
+		//clean up to done bith in cancel
 		listener.onEndSpeak(tts_obj, current_text_id);
 	}
 

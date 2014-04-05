@@ -401,7 +401,7 @@ public class TabHandler implements ITabHandler
 					speak(nodeValueToSend);
 					System.out.println("highlighting");
 					hightLight(node_Id);
-					System.out.println("Highlight Message sent on KEY PAUSE"); 
+					//System.out.println("Highlight Message sent on KEY PAUSE"); 
 				}
 			}
 		}
@@ -458,15 +458,9 @@ public class TabHandler implements ITabHandler
 			if(iterator.next())
 			{
 				String ttsDoneNodeValueToSend = iterator.getPos().getTextContent();
-				if(ttsDoneNodeValueToSend == null || ttsDoneNodeValueToSend.equals(null)){
-					System.out.println("NULL TABHANDLER FLAG");
-				}
-				else if(ttsDoneNodeValueToSend != null || !ttsDoneNodeValueToSend.equals(null))
-				{
-					speak(ttsDoneNodeValueToSend);
-					hightLight(0);
-					System.out.println("Highlight Message sent on TTS_DONE"); 
-				}
+				speak(ttsDoneNodeValueToSend);
+				hightLight(0);
+				System.out.println("Highlight Message sent on TTS_DONE"); 
 			}
 		}
 	}
